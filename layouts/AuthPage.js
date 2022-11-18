@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
         height: 250,
         borderRadius: 250,
         position: "absolute",
+        zIndex: 999,
     },
     leftCircle: {
         top: -50,
