@@ -1,13 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import RootStackNav from './navigation/RootStackNav';
 import { AuthenticatedUserProvider } from './providers/AuthenticatedUserProvider';
-import theme from './config/theme';
+import { UserDataProvider } from './providers/UserDataProvider';
 
 export default function App() {
   return (
     <>
       <AuthenticatedUserProvider>
-        <RootStackNav />
+        <UserDataProvider>
+          <RootStackNav />
+        </UserDataProvider>
       </AuthenticatedUserProvider>
       <StatusBar style="dark" />
     </>

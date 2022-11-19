@@ -3,6 +3,7 @@ import AuthPage from "../../layouts/AuthPage";
 import { Formik, ErrorMessage } from "formik";
 import theme from "../../config/theme";
 import * as Yup from "yup";
+import auth from "@react-native-firebase/auth";
 
 export default function ForgotPasswordScreen({ navigation }) {
     return (
@@ -15,6 +16,11 @@ export default function ForgotPasswordScreen({ navigation }) {
                     <Formik
                         initialValues={{ email: "" }}
                         validationSchema={Yup.object({ email: Yup.string().required().email() })}
+                        onSubmit={({email}, {setErrors}) => {
+                            auth().sendPasswordResetEmail(email)
+                            .then(() => console.log("Email sent"))
+                            .catch((e) => setErrors({email: e.message}));
+                        }}
                     >
                     {({ handleChange, handleBlur, handleSubmit, values }) => (
                         <View style={styles.main}>
@@ -22,7 +28,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                                 name="email"
                                 placeholder="Email"
                                 onBlur={handleBlur("email")}
-                                onChange={handleChange("email")}
+                                onChangeText={handleChange("email")}
                                 value={values.email}
                                 style={styles.input}
                             />
