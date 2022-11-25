@@ -36,7 +36,8 @@ const schema = Yup.object({
 });
 
 function sendApplication(app) {
-    const applications = firestore().collection("pending").doc("businesses").collection("applications");
+    app.role = "business";
+    const applications = firestore().collection("pending");
     return applications.add(app);
 }
 

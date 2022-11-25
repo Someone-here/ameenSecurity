@@ -59,7 +59,7 @@ schema = Yup.object(schema);
 function sendApplication(app) {
     let payload = app;
     payload.role = "guard";
-    const ref = firestore().collection("pending").doc("users").collection("applications");
+    const ref = firestore().collection("pending")
     return ref.add(payload);
 }
 
