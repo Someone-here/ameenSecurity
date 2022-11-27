@@ -24,7 +24,7 @@ export default function ClientHomeScreen({navigation}) {
                     <Text style={common.h5}>{userData?.firstName} {userData?.lastName}</Text>
                 </View>
                 <Rating startingValue={userData.rating} readonly imageSize={30} tintColor={theme.colors.background} ratingColor={theme.colors.red} />
-                <View style={{marginLeft: 28}}>
+                <View style={{marginLeft: 28, alignItems: "center"}}>
                     <FontAwesome name="check-circle" size={64} color={theme.colors.blue} />
                     <Text style={[common.normalText, {textAlign: "center"}]}>SIA Verified</Text>
                 </View>
