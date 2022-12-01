@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 const styles = StyleSheet.create({
     normalText: {
@@ -16,8 +17,8 @@ const styles = StyleSheet.create({
         fontWeight: "600",
     },
     avatar: {
-        width: 120,
-        height: 120,
+        width: hp(12),
+        aspectRatio: 1,
         borderRadius: 100,
         marginBottom: 12,
     },

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import Theme from "../config/theme";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-end",
         justifyContent: "space-around",
         elevation: 20,
-        bottom: 0,
+        bottom: Platform.OS === "ios" ? 20 : 0,
     },
     btn: {
         flex: 1,
