@@ -1,20 +1,24 @@
 import React, { useState, createContext } from 'react';
 import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
 
 export const UserDataContext = createContext({});
+export const UpdateUserDataContext = createContext({});
 
 export const UserDataProvider = ({ children }) => {
-    const [userData, setUserData] = useState(null);
+    const [userData, setRootData] = useState(null);
 
-    function updateUserData(data) {
-        if (!userData || !user) return;
-        console.log(user.uid, data);
+    function updateUserData(id) {
+        const userRef = firestore().collection("users").doc(id);
+        userRef.onSnapshot(snap => {
+            if (snap.exists) setRootData(snap.data());
+        })
     }
 
     return (
-        <UserDataContext.Provider value={{ userData, setUserData, updateUserData }}>
+        <UserDataContext.Provider value={{ userData, setRootData }}>
+          <UpdateUserDataContext.Provider value={{updateUserData}}>
             {children}
+          </UpdateUserDataContext.Provider>
         </UserDataContext.Provider>
     );
 

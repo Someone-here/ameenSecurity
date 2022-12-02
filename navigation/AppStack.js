@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthenticatedUserContext } from "../providers/AuthenticatedUserProvider";
-import { UserDataContext } from "../providers/UserDataProvider";
+import { UpdateUserDataContext, UserDataContext } from "../providers/UserDataProvider";
 import firestore from "@react-native-firebase/firestore";
 import ClientStack from "./ClientStack";
 import BusinessStack from "./BusinessStack";
@@ -8,15 +8,12 @@ import { ActivityIndicator } from "react-native";
 
 export default function AppStack() {
     const { user } = useContext(AuthenticatedUserContext);
-    const { userData, setUserData } = useContext(UserDataContext);
+    const { userData } = useContext(UserDataContext);
+    const { updateUserData } = useContext(UpdateUserDataContext);
     
     useEffect(() => {
         if (!userData || userData.email !== user.email) {
-            const store = firestore();
-            const userRef = store.collection("users").doc(user.uid);
-            userRef.get().then((doc) => {
-                if (doc.exists) setUserData(doc.data());
-            });
+            updateUserData(user.uid);
         }
     }, []);
 

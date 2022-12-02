@@ -16,9 +16,9 @@ export default function ClientHomeScreen({ navigation }) {
     <HomePage
       signOutPress={() => {
         auth().signOut();
-        setUserData(null);
       }}
     >
+      <View style={{paddingHorizontal: 16}}>
       <Text style={[common.h4, { alignSelf: "center" }]}>
         Hello, {userData.firstName}!
       </Text>
@@ -41,18 +41,18 @@ export default function ClientHomeScreen({ navigation }) {
             isDisabled={true}
             showRating={false}
         />
-        <View style={{ marginLeft: 28, justifyContent: "center" }}>
+        <View style={{ marginLeft: 28, justifyContent: "center", alignItems: "center" }}>
           <FontAwesome
             name="check-circle"
-            size={64}
+            size={48}
             color={theme.colors.blue}
           />
-          <Text style={[common.normalText, { textAlign: "center" }]}>
-            SIA Verified
+          <Text style={[common.normalText, { marginTop: 2, textAlign: "center" }]}>
+            Verified
           </Text>
         </View>
       </View>
-      <View style={styles.details}>
+      <View style={common.details}>
         <View style={common.row}>
           <Text style={common.h5}>SIA ID:</Text>
           <Text style={common.normalText}>{userData?.SIA}</Text>
@@ -79,6 +79,7 @@ export default function ClientHomeScreen({ navigation }) {
       >
         <Text style={common.h4}>Messages</Text>
       </TouchableOpacity>
+      </View>
     </HomePage>
   );
 }
@@ -92,13 +93,6 @@ const styles = StyleSheet.create({
     marginTop: 18,
     alignItems: "center",
     justifyContent: "center",
-  },
-  details: {
-    marginTop: 18,
-    backgroundColor: theme.colors.lightBlue,
-    borderRadius: 16,
-    paddingHorizontal: 24,
-    paddingVertical: 24,
   },
   infoBar: {
     flexDirection: "row",
