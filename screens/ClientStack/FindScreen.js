@@ -1,9 +1,4 @@
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { Text, View, TouchableOpacity, FlatList } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { UserDataContext } from "../../providers/UserDataProvider";
 import HomePage from "../../layouts/HomePage";
@@ -49,7 +44,14 @@ export default function FindScreen({ navigation }) {
         <View style={{ height: "100%" }}>
           <FlatList
             data={shifts}
-            renderItem={({ item }) => <Shift shift={item} />}
+            renderItem={({ item }) => (
+              <Shift
+                shift={item}
+                onPress={() => {
+                  navigation.navigate("ShiftDetail", { item, status: "explore" });
+                }}
+              />
+            )}
             refreshing={loading}
             onRefresh={() => setLoading(true)}
           />

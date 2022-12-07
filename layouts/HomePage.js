@@ -1,12 +1,16 @@
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import theme from "../config/theme";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomePage({
   helpPress,
   signOutPress,
   children,
 }) {
+
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -16,7 +20,7 @@ export default function HomePage({
           resizeMode="contain"
         />
         <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity style={{ marginRight: 20 }} onPress={helpPress}>
+          <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate("Contact")}>
             <FontAwesome
               name="headphones"
               size={35}

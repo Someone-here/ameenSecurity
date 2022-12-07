@@ -6,10 +6,54 @@ import common from "../../config/styles.common";
 import dayjs from "dayjs";
 import theme from "../../config/theme";
 
+function ApplyButton() {
+  return (
+    <TouchableOpacity style={common.button}>
+      <Text style={common.h4}>Apply</Text>
+    </TouchableOpacity>
+  )
+}
+
+function CancelButton() {
+  return (
+    <TouchableOpacity
+      style={[common.button, { backgroundColor: theme.colors.red }]}
+    >
+      <Text style={common.h4}>Cancel</Text>
+    </TouchableOpacity>
+  );
+}
+
+function VenueProfileButton() {
+  return (
+    <TouchableOpacity style={common.button}>
+      <Text style={common.h4}>Venue</Text>
+    </TouchableOpacity>
+  );
+}
+
+function VenueAndCancelButton() {
+  return (
+    <View style={[common.row, { width: "80%" }]}>
+      <CancelButton />
+      <VenueProfileButton />
+    </View>
+  )
+}
+
+const actions = {
+  explore: ApplyButton,
+  applied: CancelButton,
+  confirmed: VenueAndCancelButton,
+  completed: VenueProfileButton,
+};
+
 export default function ShiftDetailScreen({ route }) {
   const navigation = useNavigation();
   const shift = route.params.item;
-  const actions = route.params.status;
+  const Action = actions.hasOwnProperty(route.params.status)
+    ? actions[route.params.status]
+    : null;
 
   return (
     <HomePage>
@@ -55,9 +99,7 @@ export default function ShiftDetailScreen({ route }) {
           </View>
         </View>
         <View style={{ alignItems: "center", marginTop: 150 }}>
-          <TouchableOpacity style={[common.button, { backgroundColor: theme.colors.red }]}>
-            <Text style={common.h4}>Cancel</Text>
-          </TouchableOpacity>
+          {Action && <Action />}
         </View>
       </View>
     </HomePage>

@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabBar from "./TabBar";
 import ActivityScreen from "../screens/ClientStack/ActivityScreen";
 import ShiftDetailScreen from "../screens/ClientStack/ShiftDetailScreen";
+import ContactScreen from "../screens/AuthStack/ContactScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -12,7 +13,7 @@ export default function ClientStack() {
   return (
     <Tab.Navigator
       tabBar={(props) => <TabBar {...props} />}
-      initialRouteName="ClientHomeScreen"
+      initialRouteName="Home"
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home" component={ClientHomeScreen} />
@@ -26,6 +27,11 @@ export default function ClientStack() {
       <Tab.Screen
         name="ShiftDetail"
         component={ShiftDetailScreen}
+        screenOptions={{ tabBarIconStyle: { display: "none" } }}
+      />
+      <Tab.Screen
+        name="Contact"
+        component={ContactScreen}
         screenOptions={{ tabBarIconStyle: { display: "none" } }}
       />
     </Tab.Navigator>
