@@ -10,7 +10,11 @@ const Tab = createMaterialTopTabNavigator();
 
 async function getShiftsData(shifts) {
   const resp = await Promise.all(shifts.map((shift) => shift.get()));
-  return resp.map((shift) => shift.data());
+  return resp.map((shift) => { 
+    const data = shift.data();
+    data.id = shift.id;
+    return data;
+  });
 }
 
 function Applied({ shifts, parentNav }) {
@@ -18,25 +22,22 @@ function Applied({ shifts, parentNav }) {
 
   useEffect(() => {
     getShiftsData(shifts).then((shift) => setApplied(shift));
-  }, []);
+  }, [shifts]);
 
   if (applied) {
     return (
       <View style={{ paddingHorizontal: 16, marginTop: 20, height: "100%" }}>
-        <FlatList
-          data={applied}
-          renderItem={({ item }) => (
-            <Shift
-              shift={item}
-              onPress={() =>
-                parentNav.navigate("ShiftDetail", {
-                  item,
-                  status: "applied",
-                })
-              }
-            />
-          )}
+        { applied.map((item) => (
+          <Shift
+          shift={item}
+          onPress={() =>
+            parentNav.navigate("ShiftDetail", {
+              item,
+              status: "applied",
+            })
+          }
         />
+        )) }
       </View>
     );
   } else return <ActivityIndicator size={48} />;
@@ -47,7 +48,7 @@ function Confirmed({ shifts, parentNav }) {
 
   useEffect(() => {
     getShiftsData(shifts).then((shift) => setConfirmed(shift));
-  }, []);
+  }, [shifts]);
 
   if (confirmed) {
     return (
@@ -76,7 +77,7 @@ function Completed({ shifts, parentNav }) {
 
   useEffect(() => {
     getShiftsData(shifts).then((shift) => setCompleted(shift));
-  }, []);
+  }, [shifts]);
 
   if (completed) {
     return (

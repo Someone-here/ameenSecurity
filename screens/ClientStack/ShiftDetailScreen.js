@@ -1,17 +1,40 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import HomePage from "../../layouts/HomePage";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import common from "../../config/styles.common";
 import dayjs from "dayjs";
 import theme from "../../config/theme";
+import firestore from "@react-native-firebase/firestore";
+import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 
-function ApplyButton() {
+function applyForShift({ userId, shiftId }) {
+  console.log(userId, shiftId);
+  const userDoc = firestore().collection("users").doc(userId);
+  const shiftDoc = firestore().collection("shifts").doc(shiftId);
+  const applyUser = userDoc.update({
+    applied: firestore.FieldValue.arrayUnion(shiftDoc),
+  });
+  const applyShift = shiftDoc.update({
+    applicants: firestore.FieldValue.arrayUnion(userDoc),
+  });
+  return Promise.all([applyUser, applyShift]);
+}
+
+function cancelShift(userId, shiftId) {
+  const doc = firestore().collection().doc(userId);
+  return doc.update({});
+}
+
+function ApplyButton(userId, shiftId) {
   return (
-    <TouchableOpacity style={common.button}>
+    <TouchableOpacity
+      style={common.button}
+      onPress={() => applyForShift(userId, shiftId)}
+    >
       <Text style={common.h4}>Apply</Text>
     </TouchableOpacity>
-  )
+  );
 }
 
 function CancelButton() {
@@ -24,9 +47,9 @@ function CancelButton() {
   );
 }
 
-function VenueProfileButton() {
+function VenueProfileButton({ onPress }) {
   return (
-    <TouchableOpacity style={common.button}>
+    <TouchableOpacity style={common.button} onPress={onPress}>
       <Text style={common.h4}>Venue</Text>
     </TouchableOpacity>
   );
@@ -38,19 +61,29 @@ function VenueAndCancelButton() {
       <CancelButton />
       <VenueProfileButton />
     </View>
-  )
+  );
 }
-
-const actions = {
-  explore: ApplyButton,
-  applied: CancelButton,
-  confirmed: VenueAndCancelButton,
-  completed: VenueProfileButton,
-};
 
 export default function ShiftDetailScreen({ route }) {
   const navigation = useNavigation();
   const shift = route.params.item;
+  const { user } = useContext(AuthenticatedUserContext);
+
+  const actions = {
+    explore: () => <ApplyButton userId={user.uid} shiftId={shift.id} />,
+    applied: CancelButton,
+    confirmed: VenueAndCancelButton,
+    completed: () => (
+      <VenueProfileButton
+        onPress={() =>
+          navigation.navigate("BusinessProfile", {
+            businessRef: shift.business,
+          })
+        }
+      />
+    ),
+  };
+
   const Action = actions.hasOwnProperty(route.params.status)
     ? actions[route.params.status]
     : null;

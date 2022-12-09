@@ -18,67 +18,75 @@ export default function ClientHomeScreen({ navigation }) {
         auth().signOut();
       }}
     >
-      <View style={{paddingHorizontal: 16}}>
-      <Text style={[common.h4, { alignSelf: "center" }]}>
-        Hello, {userData.firstName}!
-      </Text>
-      <View style={styles.infoBar}>
-        <View>
-          <Image
-            source={{
-              uri: "https://firebasestorage.googleapis.com/v0/b/ameen-security.appspot.com/o/avatars%2FJMWu6HDxHQavLch2QJD9lZgnv1I3.jpg?alt=media&token=d9d92bcf-1e50-4144-bc55-afcf85ec1ca2",
-            }}
-            style={common.avatar}
-          />
-          <Text style={common.h5}>
-            {userData?.firstName} {userData?.lastName}
-          </Text>
-        </View>
-        <AirbnbRating
+      <View style={{ paddingHorizontal: 16 }}>
+        <Text style={[common.h4, { alignSelf: "center" }]}>
+          Hello, {userData.firstName}!
+        </Text>
+        <View style={styles.infoBar}>
+          <View>
+            <Image
+              source={{
+                uri: "https://firebasestorage.googleapis.com/v0/b/ameen-security.appspot.com/o/avatars%2FJMWu6HDxHQavLch2QJD9lZgnv1I3.jpg?alt=media&token=d9d92bcf-1e50-4144-bc55-afcf85ec1ca2",
+              }}
+              style={common.avatar}
+            />
+            <Text style={common.h5}>
+              {userData?.firstName} {userData?.lastName}
+            </Text>
+          </View>
+          <AirbnbRating
             size={20}
             count={5}
             defaultRating={userData?.rating}
             isDisabled={true}
             showRating={false}
-        />
-        <View style={{ marginLeft: 28, justifyContent: "center", alignItems: "center" }}>
-          <FontAwesome
-            name="check-circle"
-            size={48}
-            color={theme.colors.blue}
           />
-          <Text style={[common.normalText, { marginTop: 2, textAlign: "center" }]}>
-            Verified
-          </Text>
-        </View>
-      </View>
-      <View style={common.details}>
-        <View style={common.row}>
-          <Text style={common.h5}>SIA ID:</Text>
-          <Text style={common.normalText}>{userData?.SIA}</Text>
-        </View>
-        <View style={common.row}>
-          <Text style={common.h5}>Shifts Completed</Text>
-          <Text style={common.normalText}>{userData?.shiftsCompleted}</Text>
-        </View>
-        <View>
-          <Text style={common.h5}>Skills:</Text>
-          <View style={{ paddingLeft: 12, marginTop: 5 }}>
-            {userData.skills &&
-              userData.skills.map((skill) => (
-                <Text key={skill} style={common.normalText}>
-                  • {skill}
-                </Text>
-              ))}
+          <View
+            style={{
+              marginLeft: 28,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <FontAwesome
+              name="check-circle"
+              size={48}
+              color={theme.colors.blue}
+            />
+            <Text
+              style={[common.normalText, { marginTop: 2, textAlign: "center" }]}
+            >
+              Verified
+            </Text>
           </View>
         </View>
-      </View>
-      <TouchableOpacity
-        style={styles.cta}
-        onPress={() => navigation.navigate("Messages")}
-      >
-        <Text style={common.h4}>Messages</Text>
-      </TouchableOpacity>
+        <View style={common.details}>
+          <View style={common.row}>
+            <Text style={common.h5}>SIA ID:</Text>
+            <Text style={common.normalText}>{userData?.SIA}</Text>
+          </View>
+          <View style={common.row}>
+            <Text style={common.h5}>Shifts Completed</Text>
+            <Text style={common.normalText}>{userData?.shiftsCompleted}</Text>
+          </View>
+          <View>
+            <Text style={common.h5}>Skills:</Text>
+            <View style={{ paddingLeft: 12, marginTop: 5 }}>
+              {userData.skills &&
+                userData.skills.map((skill) => (
+                  <Text key={skill} style={common.normalText}>
+                    • {skill}
+                  </Text>
+                ))}
+            </View>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={styles.cta}
+          onPress={() => navigation.navigate("Messages")}
+        >
+          <Text style={common.h4}>Messages</Text>
+        </TouchableOpacity>
       </View>
     </HomePage>
   );

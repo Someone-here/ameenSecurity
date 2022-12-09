@@ -4,7 +4,6 @@ import theme from "../config/theme";
 import { useNavigation } from "@react-navigation/native";
 
 export default function HomePage({
-  helpPress,
   signOutPress,
   children,
 }) {

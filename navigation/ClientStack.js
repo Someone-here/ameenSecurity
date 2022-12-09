@@ -6,6 +6,7 @@ import TabBar from "./TabBar";
 import ActivityScreen from "../screens/ClientStack/ActivityScreen";
 import ShiftDetailScreen from "../screens/ClientStack/ShiftDetailScreen";
 import ContactScreen from "../screens/AuthStack/ContactScreen";
+import BusinessProfileScreen from "../screens/ClientStack/BusinessProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -33,6 +34,11 @@ export default function ClientStack() {
         name="Contact"
         component={ContactScreen}
         screenOptions={{ tabBarIconStyle: { display: "none" } }}
+      />
+      <Tab.Screen
+        name="BusinessProfile"
+        component={BusinessProfileScreen}
+        screenOptions={{tabBarIconStyle: { display: "none" }}}
       />
     </Tab.Navigator>
   );
