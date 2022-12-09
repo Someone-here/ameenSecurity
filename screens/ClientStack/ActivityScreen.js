@@ -10,7 +10,7 @@ const Tab = createMaterialTopTabNavigator();
 
 async function getShiftsData(shifts) {
   const resp = await Promise.all(shifts.map((shift) => shift.get()));
-  return resp.map((shift) => { 
+  return resp.map((shift) => {
     const data = shift.data();
     data.id = shift.id;
     return data;
@@ -27,17 +27,20 @@ function Applied({ shifts, parentNav }) {
   if (applied) {
     return (
       <View style={{ paddingHorizontal: 16, marginTop: 20, height: "100%" }}>
-        { applied.map((item) => (
-          <Shift
-          shift={item}
-          onPress={() =>
-            parentNav.navigate("ShiftDetail", {
-              item,
-              status: "applied",
-            })
-          }
+        <FlatList
+          data={applied}
+          renderItem={({ item }) => (
+            <Shift
+              shift={item}
+              onPress={() =>
+                parentNav.navigate("ShiftDetail", {
+                  item,
+                  status: "applied",
+                })
+              }
+            />
+          )}
         />
-        )) }
       </View>
     );
   } else return <ActivityIndicator size={48} />;

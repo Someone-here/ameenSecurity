@@ -55,11 +55,12 @@ function VenueProfileButton({ onPress }) {
   );
 }
 
-function VenueAndCancelButton() {
+function VenueAndCancelButton({ onCancel, onVenue }) {
+
   return (
     <View style={[common.row, { width: "80%" }]}>
       <CancelButton />
-      <VenueProfileButton />
+      <VenueProfileButton onPress={onVenue} />
     </View>
   );
 }
@@ -69,19 +70,16 @@ export default function ShiftDetailScreen({ route }) {
   const shift = route.params.item;
   const { user } = useContext(AuthenticatedUserContext);
 
+  const navigateToBusiness = () => 
+    navigation.navigate("BusinessProfile", {
+      businessRef: shift.business,
+    });
+
   const actions = {
     explore: () => <ApplyButton userId={user.uid} shiftId={shift.id} />,
-    applied: CancelButton,
+    applied: () => <VenueAndCancelButton onVenue={navigateToBusiness} />,
     confirmed: VenueAndCancelButton,
-    completed: () => (
-      <VenueProfileButton
-        onPress={() =>
-          navigation.navigate("BusinessProfile", {
-            businessRef: shift.business,
-          })
-        }
-      />
-    ),
+    completed: () => <VenueProfileButton onPress={navigateToBusiness} />,
   };
 
   const Action = actions.hasOwnProperty(route.params.status)

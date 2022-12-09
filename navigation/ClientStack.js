@@ -7,10 +7,15 @@ import ActivityScreen from "../screens/ClientStack/ActivityScreen";
 import ShiftDetailScreen from "../screens/ClientStack/ShiftDetailScreen";
 import ContactScreen from "../screens/AuthStack/ContactScreen";
 import BusinessProfileScreen from "../screens/ClientStack/BusinessProfileScreen";
+import ChatScreen from "../screens/ClientStack/ChatScreen";
+import BackArrow from "../components/BackArrow";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 export default function ClientStack() {
+  const navigation = useNavigation();
+
   return (
     <Tab.Navigator
       tabBar={(props) => <TabBar {...props} />}
@@ -23,22 +28,25 @@ export default function ClientStack() {
       <Tab.Screen
         name="Messages"
         component={MessagesScreen}
-        screenOptions={{ tabBarIconStyle: { display: "none" } }}
+        options={{
+          headerShown: true,
+          headerLeft: () => (
+            <BackArrow onPress={() => navigation.navigate("Home")} />
+          ),
+        }}
       />
+      <Tab.Screen name="ShiftDetail" component={ShiftDetailScreen} />
+      <Tab.Screen name="Contact" component={ContactScreen} />
+      <Tab.Screen name="BusinessProfile" component={BusinessProfileScreen} />
       <Tab.Screen
-        name="ShiftDetail"
-        component={ShiftDetailScreen}
-        screenOptions={{ tabBarIconStyle: { display: "none" } }}
-      />
-      <Tab.Screen
-        name="Contact"
-        component={ContactScreen}
-        screenOptions={{ tabBarIconStyle: { display: "none" } }}
-      />
-      <Tab.Screen
-        name="BusinessProfile"
-        component={BusinessProfileScreen}
-        screenOptions={{tabBarIconStyle: { display: "none" }}}
+        name="Chat"
+        component={ChatScreen}
+        options={{
+          headerShown: true,
+          headerLeft: () => (
+            <BackArrow onPress={() => navigation.navigate("Messages")} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
