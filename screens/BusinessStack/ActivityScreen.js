@@ -1,4 +1,10 @@
-import { View, ActivityIndicator, FlatList } from "react-native";
+import {
+  View,
+  ActivityIndicator,
+  FlatList,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import HomePage from "../../layouts/HomePage";
 import { useContext, useEffect, useState } from "react";
 import { UserDataContext } from "../../providers/UserDataProvider";
@@ -6,6 +12,7 @@ import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import theme from "../../config/theme";
 import Shift from "../../components/Shift";
+import common from "../../config/styles.common";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -48,6 +55,14 @@ function Advertised({ shifts, navigation }) {
           />
         )}
       />
+      <TouchableOpacity
+        style={[
+          common.button,
+          { position: "absolute", bottom: 32, right: 12, backgroundColor: theme.colors.red },
+        ]}
+      >
+        <Text style={common.h5}>Add Shift</Text>
+      </TouchableOpacity>
     </View>
   );
 }

@@ -27,12 +27,7 @@ export default function FindScreen({ navigation }) {
   }, [loading]);
 
   return (
-    <HomePage
-      signOutPress={() => {
-        auth().signOut();
-      }}
-      style={{ maxHeight: hp(75) }}
-    >
+    <HomePage style={{ maxHeight: hp(75) }}>
       <View style={{ paddingHorizontal: 16 }}>
         <Text style={[common.h4, { alignSelf: "center", marginBottom: 24 }]}>
           Available Shifts

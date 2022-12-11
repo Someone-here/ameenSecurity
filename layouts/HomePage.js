@@ -2,9 +2,9 @@ import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import theme from "../config/theme";
 import { useNavigation } from "@react-navigation/native";
+import auth from "@react-native-firebase/auth";
 
 export default function HomePage({
-  signOutPress,
   children,
   style
 }) {
@@ -27,7 +27,7 @@ export default function HomePage({
               color={theme.colors.blue}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={signOutPress}>
+          <TouchableOpacity onPress={() => auth().signOut()}>
             <FontAwesome name="sign-out" color={theme.colors.blue} size={35} />
           </TouchableOpacity>
         </View>

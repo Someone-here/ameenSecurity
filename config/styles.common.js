@@ -21,7 +21,7 @@ const common = StyleSheet.create({
         backgroundColor: theme.colors.blue,
         borderRadius: 24,
         paddingHorizontal: 18,
-        height: 50,
+        height: 60,
         alignItems: "center",
         justifyContent: "center",
     },

@@ -13,11 +13,7 @@ export default function ClientHomeScreen({ navigation }) {
 
   console.log(userData);
   return (
-    <HomePage
-      signOutPress={() => {
-        auth().signOut();
-      }}
-    >
+    <HomePage>
       <View style={{ paddingHorizontal: 16 }}>
         <Text style={[common.h4, { alignSelf: "center" }]}>
           Hello, {userData.firstName}!
