@@ -1,12 +1,19 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import TabBar from "./TabBar";
 import BusinessHomeScreen from "../screens/BusinessStack/BusinessHomeScreen";
+import ActivityScreen from "../screens/BusinessStack/ActivityScreen";
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function BusinessStack() {
-    return (
-        <Stack.Navigator initialRouteName="BusinessHomeScreen" screenOptions={{headerShown: false}}>
-            <Stack.Screen name="BusinessHomeScreen" component={BusinessHomeScreen} />
-        </Stack.Navigator>
-    )
+  return (
+    <Tab.Navigator
+      tabBar={(props) => <TabBar {...props} />}
+      initialRouteName="Home"
+      screenOptions={{ headerShown: false }}
+    >
+      <Tab.Screen name="Home" component={BusinessHomeScreen} />
+      <Tab.Screen name="Activity" component={ActivityScreen} />
+    </Tab.Navigator>
+  );
 }

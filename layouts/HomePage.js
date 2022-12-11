@@ -6,12 +6,13 @@ import { useNavigation } from "@react-navigation/native";
 export default function HomePage({
   signOutPress,
   children,
+  style
 }) {
 
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <View style={styles.header}>
         <Image
           source={require("../assets/icon.png")}
@@ -48,6 +49,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 2,
     paddingHorizontal: 16,
+    maxHeight: 100
   },
   topLogo: {
     width: 80,
