@@ -45,7 +45,7 @@ export default function Shift({ shift, onPress }) {
 const styles = StyleSheet.create({
   shift: {
     backgroundColor: theme.colors.lightBlue,
-    padding: 12,
+    padding: 8,
     borderRadius: 12,
     flexDirection: "row",
     marginBottom: 12,
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rightRow: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        width: "90%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
   }
 });

@@ -5,6 +5,7 @@ import theme from "../../config/theme";
 import HomePage from "../../layouts/HomePage";
 import { UserDataContext } from "../../providers/UserDataProvider";
 import Shift from "../../components/Shift";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -108,7 +109,7 @@ export default function ActivityScreen({ navigation }) {
   const { userData } = useContext(UserDataContext);
 
   return (
-    <HomePage>
+    <HomePage style={{ height: hp(92) }}>
       <Tab.Navigator
         style={{ marginTop: 18 }}
         sceneContainerStyle={{ backgroundColor: theme.colors.background }}
