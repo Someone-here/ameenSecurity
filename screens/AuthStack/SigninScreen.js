@@ -42,7 +42,7 @@ export default function SignInScreen({ navigation }) {
                                         onChangeText={handleChange('email')}
                                         onBlur={handleBlur('email')}
                                         value={values.email}
-                                        style={[styles.input, { marginBottom: errors.email?0:12 }]}
+                                        style={styles.input}
                                         keyboardType="email-address"
                                     />
                                     <ErrorMessage name="email">
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         fontSize: 18,
         padding: 12,
+        marginBottom: 12,
     },
     error: {
         color: "red",

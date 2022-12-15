@@ -58,7 +58,7 @@ function Advertised({ shifts, navigation }) {
       <TouchableOpacity
         style={[
           common.button,
-          { position: "absolute", bottom: 32, right: 12, backgroundColor: theme.colors.red },
+          { position: "absolute", bottom: hp(6), right: 12, backgroundColor: theme.colors.red },
         ]}
       >
         <Text style={common.h5}>Add Shift</Text>
