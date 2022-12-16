@@ -6,12 +6,11 @@ import theme from "../../config/theme";
 import HomePage from "../../layouts/HomePage";
 import { FontAwesome } from "@expo/vector-icons";
 import common from "../../config/styles.common";
-import { AirbnbRating, Rating } from "react-native-ratings";
+import { AirbnbRating } from "react-native-ratings";
 
 export default function ClientHomeScreen({ navigation }) {
-  const { userData, setUserData } = useContext(UserDataContext);
+  const { userData} = useContext(UserDataContext);
 
-  console.log(userData);
   return (
     <HomePage>
       <View style={{ paddingHorizontal: 16 }}>
@@ -22,7 +21,7 @@ export default function ClientHomeScreen({ navigation }) {
           <View>
             <Image
               source={{
-                uri: "https://firebasestorage.googleapis.com/v0/b/ameen-security.appspot.com/o/avatars%2FJMWu6HDxHQavLch2QJD9lZgnv1I3.jpg?alt=media&token=d9d92bcf-1e50-4144-bc55-afcf85ec1ca2",
+                uri: userData.avatar,
               }}
               style={common.avatar}
             />

@@ -21,7 +21,7 @@ export default function MessagesScreen() {
               <Image
                 style={{width: 80, aspectRatio: 1}}
                 source={{
-                  uri: "https://firebasestorage.googleapis.com/v0/b/ameen-security.appspot.com/o/avatars%2FJMWu6HDxHQavLch2QJD9lZgnv1I3.jpg?alt=media&token=d9d92bcf-1e50-4144-bc55-afcf85ec1ca2",
+                  uri: item.avatar,
                 }}
               />
               <View style={{width: "70%", margin: "auto"}}>

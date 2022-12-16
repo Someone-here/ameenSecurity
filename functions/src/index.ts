@@ -1,3 +1,4 @@
-import { FunctionParser } from "firebase-backend";
+import { https } from "firebase-functions";
+import { add } from "./shifts";
 
-exports = new FunctionParser({ rootPath: __dirname, exports: exports }).exports;
+exports.addShift = https.onCall(add);

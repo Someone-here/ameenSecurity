@@ -60,6 +60,7 @@ function Advertised({ shifts, navigation }) {
           common.button,
           { position: "absolute", bottom: hp(6), right: 12, backgroundColor: theme.colors.red },
         ]}
+        onPress={() => navigation.navigate("AddShift")}
       >
         <Text style={common.h5}>Add Shift</Text>
       </TouchableOpacity>

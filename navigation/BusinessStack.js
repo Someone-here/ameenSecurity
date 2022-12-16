@@ -8,6 +8,7 @@ import BackArrow from "../components/BackArrow";
 import { useNavigation } from "@react-navigation/native";
 import ChatScreen from "../screens/ClientStack/ChatScreen";
 import ContactScreen from "../screens/AuthStack/ContactScreen";
+import AddShiftScreen from "../screens/BusinessStack/AddShiftScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -37,6 +38,7 @@ export default function BusinessStack() {
           ),
         }}
       />
+      <Tab.Screen name="AddShift" component={AddShiftScreen} />
       <Tab.Screen name="Contact" component={ContactScreen} />
       <Tab.Screen
         name="Chat"
