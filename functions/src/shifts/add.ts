@@ -1,9 +1,9 @@
 import * as admin from "firebase-admin";
-import { firestore } from "firebase-admin";
-import { FieldValue } from "firebase-admin/firestore";
+import {firestore} from "firebase-admin";
+import {FieldValue} from "firebase-admin/firestore";
 
 admin.initializeApp();
-const firestoreRef = admin.firestore
+const firestoreRef = admin.firestore;
 
 interface AddShiftRequest {
   start: string
@@ -55,10 +55,10 @@ async function addShift(data: AddShiftRequest) {
     venue: business.venueType,
     numOfApplicants: 0,
     applicants: [],
-  }
+  };
   const doc = await shifts.add(body);
-  await businessRef.update({ advertised: FieldValue.arrayUnion(doc) })
-  return { shift: doc };
+  await businessRef.update({advertised: FieldValue.arrayUnion(doc)});
+  return {shift: doc};
 }
 
 export default addShift;
