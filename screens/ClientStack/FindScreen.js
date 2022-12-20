@@ -27,13 +27,14 @@ export default function FindScreen({ navigation }) {
   }, [loading]);
 
   return (
-    <HomePage style={{ maxHeight: hp(75) }}>
-      <View style={{ paddingHorizontal: 16 }}>
+    <HomePage style={{ maxHeight: hp(90) }}>
+      <View style={{ paddingHorizontal: 16, height: "100%" }}>
         <Text style={[common.h4, { alignSelf: "center", marginBottom: 24 }]}>
           Available Shifts
         </Text>
           <FlatList
             data={shifts}
+            style={{ height: "100%" }}
             renderItem={({ item }) => (
               <Shift
                 shift={item}

@@ -1,9 +1,10 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import HomePage from "../../layouts/HomePage";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import common from "../../config/styles.common";
 import dayjs from "dayjs";
+import Applicant from "../../components/Applicant";
 import theme from "../../config/theme";
 import firestore from "@react-native-firebase/firestore";
 import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
@@ -21,9 +22,14 @@ function applyForShift({ userId, shiftId }) {
   return Promise.all([applyUser, applyShift]);
 }
 
-function cancelShift(userId, shiftId) {
+function deleteShift(userId, shiftId) {
   const doc = firestore().collection().doc(userId);
   return doc.update({});
+}
+
+async function getApplicants(applicants) {
+  const appRefs = applicants.map(applicant => applicant.get());
+  return (await Promise.all(appRefs)).map(doc => { return { id: doc.id, ...doc.data() } });
 }
 
 function ApplyButton(userId, shiftId) {
@@ -37,12 +43,13 @@ function ApplyButton(userId, shiftId) {
   );
 }
 
-function CancelButton() {
+function DeleteButton({ userId, shiftId, status, navigation }) {
   return (
     <TouchableOpacity
       style={[common.button, { backgroundColor: theme.colors.red }]}
+      onPress={() => deleteShift({ userId, shiftId, status }).then(() => navigation.navigate("Activity"))}
     >
-      <Text style={common.h4}>Cancel</Text>
+      <Text style={common.h4}>Delete</Text>
     </TouchableOpacity>
   );
 }
@@ -66,8 +73,14 @@ function VenueAndCancelButton({ onCancel, onVenue }) {
 }
 
 export default function ShiftDetailScreen({ route }) {
+  const [applicants, setApplicants] = useState([]);
   const navigation = useNavigation();
   const shift = route.params.item;
+  
+  useEffect(() => {
+    getApplicants(shift.applicants).then(setApplicants)
+  }, [])
+
   const { user } = useContext(AuthenticatedUserContext);
 
   const navigateToBusiness = () => 
@@ -76,7 +89,7 @@ export default function ShiftDetailScreen({ route }) {
     });
 
   const actions = {
-    explore: () => <ApplyButton userId={user.uid} shiftId={shift.id} />,
+    advertised: () => <DeleteButton userId={user.uid} shiftId={shift.id} status="advertised" navigation={navigation} />,
     applied: () => <VenueAndCancelButton onVenue={navigateToBusiness} />,
     confirmed: VenueAndCancelButton,
     completed: () => <VenueProfileButton onPress={navigateToBusiness} />,
@@ -88,7 +101,7 @@ export default function ShiftDetailScreen({ route }) {
 
   return (
     <HomePage>
-      <View style={{ paddingHorizontal: 18 }}>
+      <ScrollView style={{ paddingHorizontal: 18 }}>
         <Text style={[common.h4, { alignSelf: "center" }]}>Shift Details</Text>
         <View style={common.details}>
           <View style={common.row}>
@@ -129,10 +142,14 @@ export default function ShiftDetailScreen({ route }) {
             </Text>
           </View>
         </View>
-        <View style={{ alignItems: "center", marginTop: 150 }}>
+        <View style={{ alignItems: "center", marginTop: 40, marginBottom: 50 }}>
           {Action && <Action />}
         </View>
-      </View>
+        <Text style={[common.h4, { alignSelf: "center", marginBottom: 24 }]}>
+          Applicants
+        </Text>
+        { applicants.map(item => <Applicant item={item} />) }
+      </ScrollView>
     </HomePage>
   );
 }

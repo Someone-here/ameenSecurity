@@ -6,41 +6,41 @@ import common from "../../config/styles.common";
 import dayjs from "dayjs";
 import theme from "../../config/theme";
 import firestore from "@react-native-firebase/firestore";
+import functions from "@react-native-firebase/functions";
 import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 
+functions().useEmulator("localhost", 5001);
+
 function applyForShift({ userId, shiftId }) {
-  console.log(userId, shiftId);
-  const userDoc = firestore().collection("users").doc(userId);
-  const shiftDoc = firestore().collection("shifts").doc(shiftId);
-  const applyUser = userDoc.update({
-    applied: firestore.FieldValue.arrayUnion(shiftDoc),
-  });
-  const applyShift = shiftDoc.update({
-    applicants: firestore.FieldValue.arrayUnion(userDoc),
-  });
-  return Promise.all([applyUser, applyShift]);
+  const action = functions().httpsCallable("applyShift");
+  return action({ userId, shiftId });
 }
 
-function cancelShift(userId, shiftId) {
-  const doc = firestore().collection().doc(userId);
-  return doc.update({});
+function cancelShift({ userId, shiftId, status }) {
+  const action = functions().httpsCallable("cancelShift");
+  return action({ userId, shiftId, status });
 }
 
-function ApplyButton(userId, shiftId) {
+function ApplyButton({ userId, shiftId, navigation }) {
   return (
     <TouchableOpacity
       style={common.button}
-      onPress={() => applyForShift(userId, shiftId)}
+      onPress={() =>
+        applyForShift({ userId, shiftId }).then(navigation.navigate("Activity"))
+      }
     >
       <Text style={common.h4}>Apply</Text>
     </TouchableOpacity>
   );
 }
 
-function CancelButton() {
+function CancelButton({ userId, shiftId, navigation, status }) {
   return (
     <TouchableOpacity
       style={[common.button, { backgroundColor: theme.colors.red }]}
+      onPress={() =>
+        cancelShift({ userId, shiftId, status }).then(() => navigation.navigate("Home"))
+      }
     >
       <Text style={common.h4}>Cancel</Text>
     </TouchableOpacity>
@@ -55,11 +55,10 @@ function VenueProfileButton({ onPress }) {
   );
 }
 
-function VenueAndCancelButton({ onCancel, onVenue }) {
-
+function VenueAndCancelButton({ userId, shiftId, status, onVenue, navigation }) {
   return (
     <View style={[common.row, { width: "80%" }]}>
-      <CancelButton />
+      <CancelButton userId={userId} shiftId={shiftId} status={status} navigation={navigation}  />
       <VenueProfileButton onPress={onVenue} />
     </View>
   );
@@ -70,16 +69,43 @@ export default function ShiftDetailScreen({ route }) {
   const shift = route.params.item;
   const { user } = useContext(AuthenticatedUserContext);
 
-  const navigateToBusiness = () => 
+  const navigateToBusiness = () =>
     navigation.navigate("BusinessProfile", {
       businessRef: shift.business,
     });
 
   const actions = {
-    explore: () => <ApplyButton userId={user.uid} shiftId={shift.id} />,
-    applied: () => <VenueAndCancelButton onVenue={navigateToBusiness} />,
-    confirmed: VenueAndCancelButton,
-    completed: () => <VenueProfileButton onPress={navigateToBusiness} />,
+    explore: () => (
+      <ApplyButton
+        userId={user.uid}
+        shiftId={shift.id}
+        navigation={navigation}
+      />
+    ),
+    applied: () => (
+      <VenueAndCancelButton
+        userId={user.uid}
+        shiftId={shift.id}
+        status="applied"
+        onVenue={navigateToBusiness}
+        navigation={navigation}
+      />
+    ),
+    confirmed: (
+      <VenueAndCancelButton
+        userId={user.uid}
+        shiftId={shift.id}
+        status="confirmed"
+        onVenue={navigateToBusiness}
+        navigation={navigation}
+      />
+    ),
+    completed: () => (
+      <VenueProfileButton
+        onPress={navigateToBusiness}
+        navigation={navigation}
+      />
+    ),
   };
 
   const Action = actions.hasOwnProperty(route.params.status)

@@ -2,17 +2,21 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import dayjs from "dayjs";
 import common from "../config/styles.common";
 import theme from "../config/theme";
+import firestore from "@react-native-firebase/firestore";
 
 export default function Shift({ shift, onPress }) {
+
+  const start = new firestore.Timestamp(...Object.values(shift.start));
+  const end = new firestore.Timestamp(...Object.values(shift.end));
 
   return (
     <TouchableOpacity style={styles.shift} key={shift.id} onPress={onPress}>
       <View style={styles.date}>
         <Text style={common.h4}>
-          {dayjs(shift.start.toDate()).format("MMM")}
+          {dayjs(start.toDate()).format("MMM")}
         </Text>
         <Text style={common.h4}>
-          {dayjs(shift.start.toDate()).format("DD")}
+          {dayjs(start.toDate()).format("DD")}
         </Text>
       </View>
       <View style={styles.shiftRow}>
@@ -21,7 +25,7 @@ export default function Shift({ shift, onPress }) {
         >
           <Text style={common.h5}>{shift.venue}</Text>
           <Text style={common.h5}>
-            ({dayjs(shift.end.toDate()).diff(shift.start.toDate(), "hours")}{" "}
+            ({dayjs(end.toDate()).diff(start.toDate(), "hours")}{" "}
             hours)
           </Text>
           <Text style={common.h5}>£ {shift.payPerHour} /hour</Text>
@@ -30,8 +34,8 @@ export default function Shift({ shift, onPress }) {
           style={styles.rightRow}
         >
           <Text style={common.h5}>
-            {dayjs(shift.start.toDate()).format("HH:mm")} -{" "}
-            {dayjs(shift.end.toDate()).format("HH:mm")}
+            {dayjs(start.toDate()).format("HH:mm")} -{" "}
+            {dayjs(end.toDate()).format("HH:mm")}
           </Text>
           <Text style={[common.h5, { textTransform: "capitalize" }]}>
             {shift.serviceRequired}
