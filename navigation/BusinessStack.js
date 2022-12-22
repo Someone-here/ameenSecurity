@@ -9,6 +9,8 @@ import { useNavigation } from "@react-navigation/native";
 import ChatScreen from "../screens/ClientStack/ChatScreen";
 import ContactScreen from "../screens/AuthStack/ContactScreen";
 import AddShiftScreen from "../screens/BusinessStack/AddShiftScreen";
+import ApplicantsScreen from "../screens/BusinessStack/ApplicantsScreen";
+import ApplicantReviewScreen from "../screens/BusinessStack/ApplicantReviewScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -29,6 +31,11 @@ export default function BusinessStack() {
         options={{ tabBarIconStyle: { display: "none" } }}
       />
       <Tab.Screen
+        name="ApplicantReview"
+        component={ApplicantReviewScreen}
+        options={{ tabBarIconStyle: { display: "none" } }}
+      />
+      <Tab.Screen
         name="Messages"
         component={MessagesScreen}
         options={{
@@ -38,6 +45,7 @@ export default function BusinessStack() {
           ),
         }}
       />
+      <Tab.Screen name="Applicants" component={ApplicantsScreen} options={{ tabBarIconStyle: { display: "none" } }} />
       <Tab.Screen name="AddShift" component={AddShiftScreen} />
       <Tab.Screen name="Contact" component={ContactScreen} />
       <Tab.Screen

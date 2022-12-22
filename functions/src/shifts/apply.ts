@@ -14,6 +14,7 @@ function apply({ userId, shiftId }: ApplyShiftRequestData) {
   const applyShift = shiftDoc.update({
     applicants: firestore.FieldValue.arrayUnion(userDoc),
     status: "reviewing",
+    numOfApplicants: firestore.FieldValue.increment(1),
   });
   return Promise.all([applyUser, applyShift]);
 }

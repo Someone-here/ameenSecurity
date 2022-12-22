@@ -19,14 +19,14 @@ const Tab = createMaterialTopTabNavigator();
 async function getShiftsData(shifts) {
   const resp = await Promise.all(shifts.map((shift) => shift.get()));
   return resp.map((shift) => {
-    const data = shift.data();
-    data.id = shift.id;
+    let data = { ...shift.data(), id: shift.id };
+    console.log(data);
     return data;
   });
 }
 
 function Advertised({ shifts, navigation }) {
-  const [advertised, setAdvertised] = useState();
+  const [advertised, setAdvertised] = useState(null);
   useEffect(() => {
     getShiftsData(shifts).then((dat) => setAdvertised(dat));
   }, [shifts]);

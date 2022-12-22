@@ -6,6 +6,8 @@ import firestore from "@react-native-firebase/firestore";
 
 export default function Shift({ shift, onPress }) {
 
+  if (!shift) return null;
+
   const start = new firestore.Timestamp(...Object.values(shift.start));
   const end = new firestore.Timestamp(...Object.values(shift.end));
 

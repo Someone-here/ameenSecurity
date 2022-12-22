@@ -28,6 +28,7 @@ function deleteShift(userId, shiftId) {
 }
 
 async function getApplicants(applicants) {
+  console.log(applicants);
   const appRefs = applicants.map(applicant => applicant.get());
   return (await Promise.all(appRefs)).map(doc => { return { id: doc.id, ...doc.data() } });
 }
@@ -73,13 +74,8 @@ function VenueAndCancelButton({ onCancel, onVenue }) {
 }
 
 export default function ShiftDetailScreen({ route }) {
-  const [applicants, setApplicants] = useState([]);
   const navigation = useNavigation();
   const shift = route.params.item;
-  
-  useEffect(() => {
-    getApplicants(shift.applicants).then(setApplicants)
-  }, [])
 
   const { user } = useContext(AuthenticatedUserContext);
 
@@ -145,10 +141,11 @@ export default function ShiftDetailScreen({ route }) {
         <View style={{ alignItems: "center", marginTop: 40, marginBottom: 50 }}>
           {Action && <Action />}
         </View>
-        <Text style={[common.h4, { alignSelf: "center", marginBottom: 24 }]}>
-          Applicants
-        </Text>
-        { applicants.map(item => <Applicant item={item} />) }
+        <TouchableOpacity style={common.button} onPress={() => navigation.navigate("Applicants", { id: shift.id })}>
+          <Text style={common.h4}>
+            {shift.numOfApplicants} Applicants
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </HomePage>
   );
