@@ -1,17 +1,28 @@
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserDataContext } from "../../providers/UserDataProvider";
 import common from "../../config/styles.common";
 import { useNavigation } from "@react-navigation/native";
+import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
+import firestore from "@react-native-firebase/firestore";
 
 export default function MessagesScreen() {
-  const { userData } = useContext(UserDataContext);
+  
+  const { user: { uid } } = useContext(AuthenticatedUserContext);
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    return firestore().collection(`users/${uid}/contacts`).onSnapshot(snap => {
+      setContacts(snap.docs.map(doc => doc.data()));
+    });
+  }, [])
+
   const navigation = useNavigation();
 
   return (
     <View>
       <FlatList
-        data={userData.contacts}
+        data={contacts}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => navigation.navigate("Chat", {contact: item})}

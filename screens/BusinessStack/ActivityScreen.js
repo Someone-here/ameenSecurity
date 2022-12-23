@@ -13,23 +13,19 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import theme from "../../config/theme";
 import Shift from "../../components/Shift";
 import common from "../../config/styles.common";
+import firestore from "@react-native-firebase/firestore";
+import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 
 const Tab = createMaterialTopTabNavigator();
 
-async function getShiftsData(shifts) {
-  const resp = await Promise.all(shifts.map((shift) => shift.get()));
-  return resp.map((shift) => {
-    let data = { ...shift.data(), id: shift.id };
-    console.log(data);
-    return data;
-  });
-}
-
-function Advertised({ shifts, navigation }) {
+function Advertised({ uid, navigation }) {
   const [advertised, setAdvertised] = useState(null);
+  
   useEffect(() => {
-    getShiftsData(shifts).then((dat) => setAdvertised(dat));
-  }, [shifts]);
+    firestore().collection(`users/${uid}/shifts`).where("status", "==", "advertised").onSnapshot(snap => {
+      setAdvertised(snap.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    });
+  }, []);
 
   if (!advertised)
     return (
@@ -68,11 +64,14 @@ function Advertised({ shifts, navigation }) {
   );
 }
 
-function Confirmed({ shifts, navigation }) {
+function Confirmed({ uid, navigation }) {
   const [confirmed, setConfirmed] = useState();
+
   useEffect(() => {
-    getShiftsData(shifts).then((dat) => setConfirmed(dat));
-  }, [shifts]);
+    firestore().collection(`users/${uid}/shifts`).where("status", "==", "confirmed").onSnapshot(snap => {
+      setConfirmed(snap.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    });
+  }, []);
 
   if (!confirmed)
     return (
@@ -102,11 +101,14 @@ function Confirmed({ shifts, navigation }) {
   );
 }
 
-function Completed({ shifts }) {
+function Completed({ uid }) {
   const [completed, setCompleted] = useState();
+  
   useEffect(() => {
-    getShiftsData(shifts).then((dat) => setCompleted(dat));
-  }, [shifts]);
+    firestore().collection(`users/${uid}/completed`).onSnapshot(snap => {
+      setCompleted(snap.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    });
+  }, []);
 
   if (!completed)
     return (
@@ -137,7 +139,7 @@ function Completed({ shifts }) {
 }
 
 export default function ActivityScreen({ navigation }) {
-  const { userData } = useContext(UserDataContext);
+  const { user: { uid } } = useContext(AuthenticatedUserContext);
 
   return (
     <HomePage style={{ height: hp(92) }}>
@@ -146,13 +148,13 @@ export default function ActivityScreen({ navigation }) {
         sceneContainerStyle={{ backgroundColor: theme.colors.background }}
       >
         <Tab.Screen name="Advertised">
-          {(props) => <Advertised shifts={userData.advertised} {...props} />}
+          {(props) => <Advertised uid={uid} {...props} />}
         </Tab.Screen>
         <Tab.Screen name="Confirmed">
-          {(props) => <Confirmed shifts={userData.confirmed} {...props} />}
+          {(props) => <Confirmed uid={uid} {...props} />}
         </Tab.Screen>
         <Tab.Screen name="Completed">
-          {(props) => <Completed shifts={userData.completed} {...props} />}
+          {(props) => <Completed uid={uid} {...props} />}
         </Tab.Screen>
       </Tab.Navigator>
     </HomePage>

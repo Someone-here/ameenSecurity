@@ -51,14 +51,11 @@ async function addShift(data: AddShiftRequest) {
     serviceRequired: data.type,
     location: business.address,
     business: businessRef,
-    status: "new",
     venue: business.venueType,
     numOfApplicants: 0,
-    applicants: [],
   };
   const doc = await shifts.add(body);
-  await businessRef.update({advertised: FieldValue.arrayUnion(doc)});
-  return {shift: doc};
+  return await businessRef.collection("shifts").doc(doc.id).set({ ...body, status: "advertised" });
 }
 
 export default addShift;

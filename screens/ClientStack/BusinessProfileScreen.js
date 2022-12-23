@@ -4,20 +4,21 @@ import HomePage from "../../layouts/HomePage";
 import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState, useContext } from "react";
 import theme from "../../config/theme";
-import { UserDataContext } from "../../providers/UserDataProvider";
+import firestore from "@react-native-firebase/firestore";
+import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 
 export default function BusinessProfileScreen({ navigation, route }) {
   const businessRef = route.params.businessRef;
   const [business, setBusiness] = useState(null);
-  const { userData } = useContext(UserDataContext);
+  const [contact, setContact] = useState([]);
+  const { user: {uid} } = useContext(AuthenticatedUserContext);
 
   useEffect(() => {
     businessRef.get().then((doc) => setBusiness(doc.data()));
+    firestore().collection(`users/${uid}/contacts`).doc(businessRef.id).get().then(doc => setContact(doc.data()))
   }, []);
 
   if (!business) return <ActivityIndicator style={{ alignSelf: "center" }} />;
-
-  const contact = userData.contacts.filter((val) => val.name == business.name);
 
   return (
     <HomePage>
@@ -58,7 +59,7 @@ export default function BusinessProfileScreen({ navigation, route }) {
           </View>
         </View>
         <View style={{marginTop: 30}}>
-          <TouchableOpacity style={common.button} onPress={() => navigation.navigate("Chat", { contact: contact[0] })}>
+          <TouchableOpacity style={common.button} onPress={() => navigation.navigate("Chat", { contact })}>
             <Text style={common.h5}>Messsage</Text>
           </TouchableOpacity>
         </View>

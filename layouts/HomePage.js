@@ -3,6 +3,8 @@ import { FontAwesome } from "@expo/vector-icons";
 import theme from "../config/theme";
 import { useNavigation } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth";
+import { useContext } from "react";
+import { AuthenticatedUserContext } from "../providers/AuthenticatedUserProvider";
 
 export default function HomePage({
   children,
@@ -10,6 +12,8 @@ export default function HomePage({
 }) {
 
   const navigation = useNavigation();
+
+  const { setUser } = useContext(AuthenticatedUserContext)
 
   return (
     <View style={[styles.container, style]}>
@@ -27,7 +31,7 @@ export default function HomePage({
               color={theme.colors.blue}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => auth().signOut()}>
+          <TouchableOpacity onPress={() => { auth().signOut(); setUser(null); }}>
             <FontAwesome name="sign-out" color={theme.colors.blue} size={35} />
           </TouchableOpacity>
         </View>

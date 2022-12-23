@@ -10,7 +10,7 @@ export const UserDataProvider = ({ children }) => {
     function updateUserData(id) {
         const userRef = firestore().collection("users").doc(id);
         userRef.onSnapshot((snap) => {
-            console.log("Updating....");
+            console.log("Updating....  ", id);
             if (snap.exists) setRootData(snap.data());
         })
     }

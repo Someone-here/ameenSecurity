@@ -12,10 +12,8 @@ export default function AppStack() {
     const { updateUserData } = useContext(UpdateUserDataContext);
     
     useEffect(() => {
-        if (!userData || userData.email !== user.email) {
-            updateUserData(user.uid);
-        }
-    }, []);
+        updateUserData(user.uid);
+    }, [user]);
 
     if (!userData) return <ActivityIndicator size="large" style={{position: "absolute", alignSelf: "center"}} />
 

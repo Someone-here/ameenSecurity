@@ -1,21 +1,34 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from "react-native";
-import auth from "@react-native-firebase/auth";
-import { useContext, useState, useEffect } from "react";
-import { UserDataContext } from "../../providers/UserDataProvider";
+import { useState, useEffect } from "react";
 import theme from "../../config/theme";
 import HomePage from "../../layouts/HomePage";
 import { FontAwesome } from "@expo/vector-icons";
 import common from "../../config/styles.common";
 import { AirbnbRating } from "react-native-ratings";
 import firestore from "@react-native-firebase/firestore";
+import functions from "@react-native-firebase/functions";
+
+functions().useEmulator("localhost", 5001);
+
+function cancelShift({ userId, shiftId, status }) {
+  const action = functions().httpsCallable("cancelShift");
+  return action({ userId, shiftId, status });
+}
+
+function confirmShift({ userId, shiftId }) {
+  const action = functions().httpsCallable("confirmShift")
+  return action({ userId, shiftId });
+}
 
 export default function ClientHomeScreen({ navigation, route }) {
   
   const [userData, setUserData] = useState(null);
+  const shiftId = route.params.shiftId;
+  const userId = route.params.userId;
 
   useEffect(() => {
     return firestore().collection("users").doc(route.params.userId).onSnapshot((snap) => setUserData(snap.data()))
-  }, [route.params])
+  }, []);
 
   if (!userData) return <ActivityIndicator size={"large"} color={theme.colors.blue} />
 
@@ -91,10 +104,10 @@ export default function ClientHomeScreen({ navigation, route }) {
           <Text style={common.h4}>Message</Text>
         </TouchableOpacity>
         <View style={[common.row, { padding: 32 }]}>
-          <TouchableOpacity style={[common.button, { width: 120, backgroundColor: "#8c8" }]}>
+          <TouchableOpacity onPress={() => confirmShift({ userId, shiftId })} style={[common.button, { width: 120, backgroundColor: "#8c8" }]}>
             <Text style={common.h5}>Select</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[common.button, { width: 120, backgroundColor: "#c88" }]}>
+          <TouchableOpacity onPress={() => cancelShift({ userId, shiftId, status: "applied" }).then(() => navigation.navigate("Activity"))} style={[common.button, { width: 120, backgroundColor: "#c88" }]}>
             <Text style={common.h5}>Decline</Text>
           </TouchableOpacity>
         </View>

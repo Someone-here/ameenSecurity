@@ -3,27 +3,21 @@ import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import theme from "../../config/theme";
 import HomePage from "../../layouts/HomePage";
-import { UserDataContext } from "../../providers/UserDataProvider";
+import firestore from "@react-native-firebase/firestore";
 import Shift from "../../components/Shift";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 
 const Tab = createMaterialTopTabNavigator();
 
-async function getShiftsData(shifts) {
-  const resp = await Promise.all(shifts.map((shift) => shift.get()));
-  return resp.map((shift) => {
-    const data = shift.data();
-    data.id = shift.id;
-    return data;
-  });
-}
-
-function Applied({ shifts, parentNav }) {
+function Applied({ userId, parentNav }) {
   const [applied, setApplied] = useState(null);
 
   useEffect(() => {
-    getShiftsData(shifts).then((shift) => setApplied(shift));
-  }, [shifts]);
+    firestore().collection(`users/${userId}/shifts`).where("status", "==", "applied").onSnapshot((snap) => {
+      setApplied(snap.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    })
+  }, [userId]);
 
   if (applied) {
     return (
@@ -47,12 +41,14 @@ function Applied({ shifts, parentNav }) {
   } else return <ActivityIndicator size={48} />;
 }
 
-function Confirmed({ shifts, parentNav }) {
+function Confirmed({ userId, parentNav }) {
   const [confirmed, setConfirmed] = useState(null);
 
   useEffect(() => {
-    getShiftsData(shifts).then((shift) => setConfirmed(shift));
-  }, [shifts]);
+    firestore().collection(`users/${userId}/shifts`).where("status", "==", "confirmed").onSnapshot((snap) => {
+      setConfirmed(snap.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    });
+  }, [userId]);
 
   if (confirmed) {
     return (
@@ -76,12 +72,14 @@ function Confirmed({ shifts, parentNav }) {
   } else return <ActivityIndicator size={48} />;
 }
 
-function Completed({ shifts, parentNav }) {
+function Completed({ userId, parentNav }) {
   const [completed, setCompleted] = useState(null);
 
   useEffect(() => {
-    getShiftsData(shifts).then((shift) => setCompleted(shift));
-  }, [shifts]);
+    firestore().collection(`users/${userId}/completed`).onSnapshot((snap) => {
+      setCompleted(snap.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    })
+  }, [userId]);
 
   if (completed) {
     return (
@@ -106,7 +104,7 @@ function Completed({ shifts, parentNav }) {
 }
 
 export default function ActivityScreen({ navigation }) {
-  const { userData } = useContext(UserDataContext);
+  const { user: { uid } } = useContext(AuthenticatedUserContext);
 
   return (
     <HomePage style={{ height: hp(92) }}>
@@ -115,16 +113,16 @@ export default function ActivityScreen({ navigation }) {
         sceneContainerStyle={{ backgroundColor: theme.colors.background }}
       >
         <Tab.Screen name="Applied">
-          {() => <Applied shifts={userData.applied} parentNav={navigation} />}
+          {() => <Applied userId={uid} parentNav={navigation} />}
         </Tab.Screen>
         <Tab.Screen name="Confirmed">
           {() => (
-            <Confirmed shifts={userData.confirmed} parentNav={navigation} />
+            <Confirmed userId={uid} parentNav={navigation} />
           )}
         </Tab.Screen>
         <Tab.Screen name="Completed">
           {() => (
-            <Completed shifts={userData.completed} parentNav={navigation} />
+            <Completed userId={uid} parentNav={navigation} />
           )}
         </Tab.Screen>
       </Tab.Navigator>
