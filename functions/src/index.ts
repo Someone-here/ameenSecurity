@@ -1,7 +1,9 @@
-import {https} from "firebase-functions";
-import {add, apply, cancel, confirm} from "./shifts";
+import {region} from "firebase-functions";
+import {add, apply, cancel, confirm, remove, deselect} from "./shifts";
 
-exports.addShift = https.onCall(add);
-exports.applyShift = https.onCall(apply);
-exports.cancelShift = https.onCall(cancel);
-exports.confirmShift = https.onCall(confirm);
+exports.addShift = region("europe-west2").https.onCall(add);
+exports.applyShift = region("europe-west2").https.onCall(apply);
+exports.cancelShift = region("europe-west2").https.onCall(cancel);
+exports.confirmShift = region("europe-west2").https.onCall(confirm);
+exports.removeShift = region("europe-west2").https.onCall(remove);
+exports.deselectShift = region("europe-west2").https.onCall(deselect);

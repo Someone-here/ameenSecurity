@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 import {firestore} from "firebase-admin";
-import {FieldValue} from "firebase-admin/firestore";
+import { Business } from "../db.types";
 
 admin.initializeApp();
 const firestoreRef = admin.firestore;
@@ -12,29 +12,6 @@ interface AddShiftRequest {
   userId: string
   payPerHour: number
   type: "guard" | "steward"
-}
-
-interface Contacts {
-  avatar: string
-  lastContact: firestore.Timestamp
-  ref: firestore.DocumentReference
-  lastMessage: string
-  name: string
-}
-
-interface Business {
-  name: string
-  venueType: string
-  email: string
-  role: string
-  pointOfContactName: string
-  pointOfContactNumber: string
-  address: string
-  avatar: string
-  advertised: firestore.DocumentReference[]
-  completed: firestore.DocumentReference[]
-  confirmed: firestore.DocumentReference[]
-  contacts: Contacts[]
 }
 
 async function addShift(data: AddShiftRequest) {
@@ -53,6 +30,7 @@ async function addShift(data: AddShiftRequest) {
     business: businessRef,
     venue: business.venueType,
     numOfApplicants: 0,
+    numOfSelected: 0
   };
   const doc = await shifts.add(body);
   return await businessRef.collection("shifts").doc(doc.id).set({ ...body, status: "advertised" });

@@ -8,21 +8,17 @@ import { AirbnbRating } from "react-native-ratings";
 import firestore from "@react-native-firebase/firestore";
 import functionInstance from "../../config/firebase.functions";
 
-function cancelShift({ userId, shiftId, status }) {
-  const action = functionInstance.httpsCallable("cancelShift");
-  return action({ userId, shiftId, status });
-}
-
-function confirmShift({ userId, shiftId }) {
-  const action = functionInstance.httpsCallable("confirmShift")
+function cancelShift({ userId, shiftId }) {
+  const action = functionInstance.httpsCallable("deselectShift");
   return action({ userId, shiftId });
 }
-
 export default function ClientHomeScreen({ navigation, route }) {
   
   const [userData, setUserData] = useState(null);
   const shiftId = route.params.shiftId;
   const userId = route.params.userId;
+
+  console.log(shiftId, userId)
 
   useEffect(() => {
     return firestore().collection("users").doc(route.params.userId).onSnapshot((snap) => setUserData(snap.data()))
@@ -101,12 +97,9 @@ export default function ClientHomeScreen({ navigation, route }) {
         >
           <Text style={common.h4}>Message</Text>
         </TouchableOpacity>
-        <View style={[common.row, { padding: 32 }]}>
-          <TouchableOpacity onPress={() => confirmShift({ userId, shiftId })} style={[common.button, { width: 120, backgroundColor: "#8c8" }]}>
-            <Text style={common.h5}>Select</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => cancelShift({ userId, shiftId, status: "applied" }).then(() => navigation.navigate("Activity"))} style={[common.button, { width: 120, backgroundColor: "#c88" }]}>
-            <Text style={common.h5}>Decline</Text>
+        <View style={[common.row, { justifyContent: "center", paddingTop: 32 }]}>
+          <TouchableOpacity onPress={() => cancelShift({ userId, shiftId }).then(() => navigation.navigate("Activity"))} style={[common.button, { width: 120, backgroundColor: "#c88" }]}>
+            <Text style={common.h5}>Deselect</Text>
           </TouchableOpacity>
         </View>
       </View>

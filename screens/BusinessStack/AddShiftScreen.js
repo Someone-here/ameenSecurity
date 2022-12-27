@@ -15,13 +15,12 @@ import { ErrorMessage, Field, Formik } from "formik";
 import dayjs from "dayjs";
 import theme from "../../config/theme";
 import Modal from "react-native-modal";
-import functions from "@react-native-firebase/functions";
+import functionInstance from "../../config/firebase.functions";
 
 async function addShift(values, userId) {
-  functions().useEmulator("localhost", 5001)
   const start = new Date(`${values.startDate} ${values.startTime}`)
   const end = dayjs(start).add(parseInt(values.hours), "h").toDate();
-  const endpoint = functions().httpsCallable("addShift")
+  const endpoint = functionInstance.httpsCallable("addShift")
   const body = {
     payPerHour: values.payPerHour,
     numRequired: values.numRequired,

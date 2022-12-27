@@ -5,19 +5,16 @@ import { useContext, useState } from "react";
 import common from "../../config/styles.common";
 import dayjs from "dayjs";
 import theme from "../../config/theme";
-import firestore from "@react-native-firebase/firestore";
-import functions from "@react-native-firebase/functions";
 import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
-
-functions().useEmulator("localhost", 5001);
+import functionInstance from "../../config/firebase.functions";
 
 function applyForShift({ userId, shiftId }) {
-  const action = functions().httpsCallable("applyShift");
+  const action = functionInstance.httpsCallable("applyShift");
   return action({ userId, shiftId });
 }
 
 function cancelShift({ userId, shiftId, status }) {
-  const action = functions().httpsCallable("cancelShift");
+  const action = functionInstance.httpsCallable("cancelShift");
   return action({ userId, shiftId, status });
 }
 
