@@ -164,6 +164,7 @@ export default function AddShiftScreen({ navigation }) {
               <TouchableOpacity
                 style={[common.button, {marginTop: 12}]}
                 onPress={handleSubmit}
+                disabled={isSubmitting}
               >
                 { isSubmitting ? <ActivityIndicator color="white" /> : <Text style={common.h5}>Submit</Text> }
               </TouchableOpacity>

@@ -1,30 +1,47 @@
-import { View, Text, TouchableOpacity, FlatList, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import HomePage from "../../layouts/HomePage";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import common from "../../config/styles.common";
 import dayjs from "dayjs";
 import theme from "../../config/theme";
 import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 import functionInstance from "../../config/firebase.functions";
 
-
 function deleteShift({ userId, shiftId }) {
   const deleteShift = functionInstance.httpsCallable("removeShift");
   return deleteShift({ userId, shiftId });
 }
 
-function EditAndDeleteButton({ userId, shiftId, status, navigation }) {
+function EditAndDeleteButton({ userId, shiftId, hasSelected, navigation }) {
+  const [loading, setLoading] = useState(false);
+
   return (
     <TouchableOpacity
+      disabled={loading}
       style={[common.button, { backgroundColor: theme.colors.red }]}
-      onPress={() => deleteShift({ userId, shiftId, status }).then(() => navigation.navigate("Activity"))}
+      onPress={() => {
+        setLoading(true);
+        deleteShift({ userId, shiftId }).then(() => {
+          setLoading(false);
+          navigation.navigate("Activity");
+        });
+      }}
     >
-      <Text style={common.h4}>Delete</Text>
+      {loading ? (
+        <ActivityIndicator color="white" />
+      ) : (
+        <Text style={common.h4}>Delete</Text>
+      )}
     </TouchableOpacity>
   );
 }
-
 
 export default function ShiftDetailScreen({ route }) {
   const navigation = useNavigation();
@@ -33,7 +50,15 @@ export default function ShiftDetailScreen({ route }) {
   const { user } = useContext(AuthenticatedUserContext);
 
   const actions = {
-    advertised: () => <EditAndDeleteButton userId={user.uid} shiftId={shift.id} status="advertised" navigation={navigation} />,
+    advertised: () => (
+      <EditAndDeleteButton
+        userId={user.uid}
+        shiftId={shift.id}
+        status="advertised"
+        navigation={navigation}
+        hasSelect={shift.numOfSelected > 0}
+      />
+    ),
   };
 
   const Action = actions.hasOwnProperty(route.params.status)
@@ -86,15 +111,26 @@ export default function ShiftDetailScreen({ route }) {
         <View style={{ alignItems: "center", marginTop: 40, marginBottom: 50 }}>
           {Action && <Action />}
         </View>
-        <TouchableOpacity style={common.button} onPress={() => shift.numOfApplicants > 0 && navigation.navigate("Applicants", { id: shift.id })}>
+        <TouchableOpacity
+          style={common.button}
+          onPress={() =>
+            shift.numOfApplicants > 0 &&
+            navigation.navigate("Applicants", { id: shift.id })
+          }
+        >
           <Text style={common.h4}>
-            {shift.numOfApplicants} Applicant{shift.numOfApplicants != 1 ? "s" : ""}
+            {shift.numOfApplicants} Applicant
+            {shift.numOfApplicants != 1 ? "s" : ""}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[common.button, { marginTop: 18 }]} onPress={() => shift.numOfSelected > 0 && navigation.navigate("Selected", { id: shift.id })}>
-          <Text style={common.h4}>
-            {shift.numOfSelected} Selected
-          </Text>
+        <TouchableOpacity
+          style={[common.button, { marginTop: 18 }]}
+          onPress={() =>
+            shift.numOfSelected > 0 &&
+            navigation.navigate("Selected", { id: shift.id })
+          }
+        >
+          <Text style={common.h4}>{shift.numOfSelected} Selected</Text>
         </TouchableOpacity>
       </ScrollView>
     </HomePage>

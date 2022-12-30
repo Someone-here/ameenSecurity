@@ -1,4 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { useState, useEffect } from "react";
 import theme from "../../config/theme";
 import HomePage from "../../layouts/HomePage";
@@ -13,23 +20,30 @@ function cancelShift({ userId, shiftId }) {
   return action({ userId, shiftId });
 }
 export default function ClientHomeScreen({ navigation, route }) {
-  
   const [userData, setUserData] = useState(null);
   const shiftId = route.params.shiftId;
   const userId = route.params.userId;
-
-  console.log(shiftId, userId)
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    return firestore().collection("users").doc(route.params.userId).onSnapshot((snap) => setUserData(snap.data()))
+    return firestore()
+      .collection("users")
+      .doc(route.params.userId)
+      .onSnapshot((snap) => setUserData(snap.data()));
   }, []);
 
-  if (!userData) return <ActivityIndicator size={"large"} color={theme.colors.blue} />
+  if (!userData)
+    return <ActivityIndicator size={"large"} color={theme.colors.blue} />;
 
   return (
     <HomePage>
       <View style={{ paddingHorizontal: 16 }}>
-        <Text style={[common.h4, { alignSelf: "center", textTransform: "capitalize" }]}>
+        <Text
+          style={[
+            common.h4,
+            { alignSelf: "center", textTransform: "capitalize" },
+          ]}
+        >
           {userData.role}
         </Text>
         <View style={styles.infoBar}>
@@ -97,9 +111,21 @@ export default function ClientHomeScreen({ navigation, route }) {
         >
           <Text style={common.h4}>Message</Text>
         </TouchableOpacity>
-        <View style={[common.row, { justifyContent: "center", paddingTop: 32 }]}>
-          <TouchableOpacity onPress={() => cancelShift({ userId, shiftId }).then(() => navigation.navigate("Activity"))} style={[common.button, { width: 120, backgroundColor: "#c88" }]}>
-            <Text style={common.h5}>Deselect</Text>
+        <View
+          style={[common.row, { justifyContent: "center", paddingTop: 32 }]}
+        >
+          <TouchableOpacity
+          disabled={loading}
+            onPress={() => {
+              setLoading(true);
+              cancelShift({ userId, shiftId }).then(() => {
+                setLoading(false);
+                navigation.navigate("Activity");
+              })
+            }}
+            style={[common.button, { width: 120, backgroundColor: "#c88" }]}
+          >
+            { loading ? <ActivityIndicator color="#fff" /> : <Text style={common.h5}>Deselect</Text> }
           </TouchableOpacity>
         </View>
       </View>

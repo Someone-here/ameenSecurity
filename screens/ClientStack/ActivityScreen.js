@@ -45,7 +45,7 @@ function Confirmed({ userId, parentNav }) {
   const [confirmed, setConfirmed] = useState(null);
 
   useEffect(() => {
-    firestore().collection(`users/${userId}/shifts`).where("status", "==", "confirmed").onSnapshot((snap) => {
+    firestore().collection(`users/${userId}/shifts`).where("status", "==", "selected").onSnapshot((snap) => {
       setConfirmed(snap.docs.map(doc => ({id: doc.id, ...doc.data()})));
     });
   }, [userId]);

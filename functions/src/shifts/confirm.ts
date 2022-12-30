@@ -32,6 +32,7 @@ export default async function confirm({ userId, shiftId } : ShiftConfirmRequest)
     });
   });
   const removeFromApplicants = shiftDocRef.collection("applicants").doc(userId).delete();
+  const updateClientStatus = userDoc.collection("shifts").doc(shiftId).update({ status: "selected" });
   
-  return await Promise.all([addUserToSelected, updateCountBusiness, updateCountShift, removeFromApplicants]);
+  return await Promise.all([addUserToSelected, updateCountBusiness, updateCountShift, removeFromApplicants, updateClientStatus]);
 }

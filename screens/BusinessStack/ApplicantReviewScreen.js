@@ -1,4 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { useState, useEffect } from "react";
 import theme from "../../config/theme";
 import HomePage from "../../layouts/HomePage";
@@ -14,26 +21,36 @@ function cancelShift({ userId, shiftId, status }) {
 }
 
 function confirmShift({ userId, shiftId }) {
-  const action = functionInstance.httpsCallable("confirmShift")
+  const action = functionInstance.httpsCallable("confirmShift");
   return action({ userId, shiftId });
 }
 
 export default function ClientHomeScreen({ navigation, route }) {
-  
   const [userData, setUserData] = useState(null);
   const shiftId = route.params.shiftId;
   const userId = route.params.userId;
+  const [selectLoading, setSelectLoading] = useState(false);
+  const [declineLoading, setdeclineLoading] = useState(false);
 
   useEffect(() => {
-    return firestore().collection("users").doc(route.params.userId).onSnapshot((snap) => setUserData(snap.data()))
+    return firestore()
+      .collection("users")
+      .doc(route.params.userId)
+      .onSnapshot((snap) => setUserData(snap.data()));
   }, []);
 
-  if (!userData) return <ActivityIndicator size={"large"} color={theme.colors.blue} />
+  if (!userData)
+    return <ActivityIndicator size={"large"} color={theme.colors.blue} />;
 
   return (
     <HomePage>
       <View style={{ paddingHorizontal: 16 }}>
-        <Text style={[common.h4, { alignSelf: "center", textTransform: "capitalize" }]}>
+        <Text
+          style={[
+            common.h4,
+            { alignSelf: "center", textTransform: "capitalize" },
+          ]}
+        >
           {userData.role}
         </Text>
         <View style={styles.infoBar}>
@@ -102,11 +119,25 @@ export default function ClientHomeScreen({ navigation, route }) {
           <Text style={common.h4}>Message</Text>
         </TouchableOpacity>
         <View style={[common.row, { padding: 32 }]}>
-          <TouchableOpacity onPress={() => confirmShift({ userId, shiftId })} style={[common.button, { width: 120, backgroundColor: "#8c8" }]}>
-            <Text style={common.h5}>Select</Text>
+          <TouchableOpacity
+            disabled={selectLoading}
+            onPress={() => { setSelectLoading(true); confirmShift({ userId, shiftId }).then(() => setSelectLoading(false)) }}
+            style={[common.button, { width: 120, backgroundColor: "#8c8" }]}
+          >
+            { selectLoading ? <ActivityIndicator color="#fff" /> : <Text style={common.h5}>Select</Text> }
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => cancelShift({ userId, shiftId, status: "applied" }).then(() => navigation.navigate("Activity"))} style={[common.button, { width: 120, backgroundColor: "#c88" }]}>
-            <Text style={common.h5}>Decline</Text>
+          <TouchableOpacity
+            disabled={declineLoading}
+            onPress={() => {
+              setdeclineLoading(true);
+              cancelShift({ userId, shiftId, status: "applied" }).then(() => {
+                setdeclineLoading(false);
+                navigation.navigate("Activity");
+            })
+            }}
+            style={[common.button, { width: 120, backgroundColor: "#c88" }]}
+          >
+            { declineLoading ? <ActivityIndicator color="#fff" /> :<Text style={common.h5}>Decline</Text> }
           </TouchableOpacity>
         </View>
       </View>

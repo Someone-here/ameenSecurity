@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import HomePage from "../../layouts/HomePage";
 import { useContext, useState } from "react";
@@ -32,14 +32,19 @@ function ApplyButton({ userId, shiftId, navigation }) {
 }
 
 function CancelButton({ userId, shiftId, navigation, status }) {
+
+  const [loading, setLoading] = useState(false);
+
   return (
     <TouchableOpacity
       style={[common.button, { backgroundColor: theme.colors.red }]}
-      onPress={() =>
-        cancelShift({ userId, shiftId, status }).then(() => navigation.navigate("Home"))
-      }
+      disabled={loading}
+      onPress={() => {
+        setLoading(true);
+        cancelShift({ userId, shiftId, status }).then(() => { setLoading(false); navigation.navigate("Home") })
+      }}
     >
-      <Text style={common.h4}>Cancel</Text>
+      { loading ? <ActivityIndicator color="#fff" /> : <Text style={common.h4}>Cancel</Text> }
     </TouchableOpacity>
   );
 }
@@ -88,12 +93,9 @@ export default function ShiftDetailScreen({ route }) {
         navigation={navigation}
       />
     ),
-    confirmed: (
-      <VenueAndCancelButton
-        userId={user.uid}
-        shiftId={shift.id}
-        status="confirmed"
-        onVenue={navigateToBusiness}
+    confirmed: () => (
+      <VenueProfileButton
+        onPress={navigateToBusiness}
         navigation={navigation}
       />
     ),
