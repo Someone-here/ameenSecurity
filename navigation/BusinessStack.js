@@ -6,7 +6,7 @@ import ShiftDetailScreen from "../screens/BusinessStack/ShiftDetailScreen";
 import MessagesScreen from "../screens/BusinessStack/MessagesScreen";
 import BackArrow from "../components/BackArrow";
 import { useNavigation } from "@react-navigation/native";
-import ChatScreen from "../screens/ClientStack/ChatScreen";
+import ChatScreen from "../screens/BusinessStack/ChatScreen";
 import ContactScreen from "../screens/AuthStack/ContactScreen";
 import AddShiftScreen from "../screens/BusinessStack/AddShiftScreen";
 import ApplicantsScreen from "../screens/BusinessStack/ApplicantsScreen";

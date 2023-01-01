@@ -8,9 +8,8 @@ import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvi
 export default function MessagesScreen() {
   const { user } = useContext(AuthenticatedUserContext);
   const [contacts, setContacts] = useState([]);
-  console.log(user.uid);
   useEffect(() => {
-    firestore().collection(`users/${user.uid}/contacts`).onSnapshot((snap) => {
+    return firestore().collection(`users/${user.uid}/contacts`).onSnapshot((snap) => {
       setContacts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     })
   }, [])
@@ -22,7 +21,7 @@ export default function MessagesScreen() {
         data={contacts}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate("Chat", {contact: item})}
+            onPress={() => navigation.navigate("Chat", { userId: user.uid, businessId: item.id, businessName: item.name })}
             style={{ width: "100%", backgroundColor: "#fffa", padding: 12 }}
           >
             <View style={common.row}>

@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import Theme from "../config/theme";
+import { useState, useEffect } from 'react';
+import { Keyboard } from 'react-native';
 import { FontAwesome } from "@expo/vector-icons";
 
 const icons = {
@@ -8,7 +10,39 @@ const icons = {
     Activity: "list-alt",
 };
 
+const useKeyboardVisible = () => {
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                setKeyboardVisible(true);
+            },
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardVisible(false);
+            },
+        );
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
+
+    return isKeyboardVisible;
+};
+
 export default function NavBar({ state, descriptors, navigation }) {
+    
+    const visible = useKeyboardVisible();
+
+
+    if (visible) return null;
+
     return (
         <View style={styles.container}>
             {state.routes.map((route, index) => {

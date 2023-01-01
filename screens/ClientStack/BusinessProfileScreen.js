@@ -1,24 +1,32 @@
-import { View, Text, Image, ActivityIndicator, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import common from "../../config/styles.common";
 import HomePage from "../../layouts/HomePage";
 import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState, useContext } from "react";
 import theme from "../../config/theme";
-import firestore from "@react-native-firebase/firestore";
 import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 
 export default function BusinessProfileScreen({ navigation, route }) {
   const businessRef = route.params.businessRef;
   const [business, setBusiness] = useState(null);
-  const [contact, setContact] = useState([]);
-  const { user: {uid} } = useContext(AuthenticatedUserContext);
+  const {
+    user: { uid },
+  } = useContext(AuthenticatedUserContext);
 
   useEffect(() => {
     businessRef.get().then((doc) => setBusiness(doc.data()));
-    firestore().collection(`users/${uid}/contacts`).doc(businessRef.id).get().then(doc => setContact(doc.data()))
   }, []);
 
-  if (!business) return <ActivityIndicator style={{ alignSelf: "center" }} />;
+  if (!business)
+    return (
+      <ActivityIndicator style={{ alignSelf: "center", marginTop: "40%" }} />
+    );
 
   return (
     <HomePage>
@@ -27,7 +35,7 @@ export default function BusinessProfileScreen({ navigation, route }) {
         <View style={[common.row, { paddingHorizontal: 8 }]}>
           <Image
             source={{
-              uri: "https://firebasestorage.googleapis.com/v0/b/ameen-security.appspot.com/o/avatars%2FJMWu6HDxHQavLch2QJD9lZgnv1I3.jpg?alt=media&token=d9d92bcf-1e50-4144-bc55-afcf85ec1ca2",
+              uri: business.avatar,
             }}
             style={common.avatar}
           />
@@ -58,8 +66,13 @@ export default function BusinessProfileScreen({ navigation, route }) {
             <Text style={common.normalText}>{business.address}</Text>
           </View>
         </View>
-        <View style={{marginTop: 30}}>
-          <TouchableOpacity style={common.button} onPress={() => navigation.navigate("Chat", { contact })}>
+        <View style={{ marginTop: 30 }}>
+          <TouchableOpacity
+            style={common.button}
+            onPress={() => {
+              navigation.navigate("Chat", { userId: uid, businessId: businessRef.id, businessName: business.name, });
+            }}
+          >
             <Text style={common.h5}>Messsage</Text>
           </TouchableOpacity>
         </View>

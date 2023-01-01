@@ -1,22 +1,18 @@
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { useContext, useEffect, useState } from "react";
-import { UserDataContext } from "../../providers/UserDataProvider";
 import common from "../../config/styles.common";
 import { useNavigation } from "@react-navigation/native";
-import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 import firestore from "@react-native-firebase/firestore";
+import { AuthenticatedUserContext } from "../../providers/AuthenticatedUserProvider";
 
 export default function MessagesScreen() {
-  
-  const { user: { uid } } = useContext(AuthenticatedUserContext);
+  const { user } = useContext(AuthenticatedUserContext);
   const [contacts, setContacts] = useState([]);
-
   useEffect(() => {
-    return firestore().collection(`users/${uid}/contacts`).onSnapshot(snap => {
-      setContacts(snap.docs.map(doc => doc.data()));
-    });
+    return firestore().collection(`users/${user.uid}/contacts`).onSnapshot((snap) => {
+      setContacts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    })
   }, [])
-
   const navigation = useNavigation();
 
   return (
@@ -25,7 +21,7 @@ export default function MessagesScreen() {
         data={contacts}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate("Chat", {contact: item})}
+            onPress={() => navigation.navigate("Chat", { userId: item.id, businessId: user.uid, businessName: item.name })}
             style={{ width: "100%", backgroundColor: "#fffa", padding: 12 }}
           >
             <View style={common.row}>

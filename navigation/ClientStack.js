@@ -43,6 +43,7 @@ export default function ClientStack() {
         component={ChatScreen}
         options={{
           headerShown: true,
+          tabBarHideOnKeyboard: true,
           headerLeft: () => (
             <BackArrow onPress={() => navigation.navigate("Messages")} />
           ),
